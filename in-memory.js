@@ -26,20 +26,30 @@ app.get("/products/:id", (req, res) => {
     }4
 });
 
-// Endpoint to create a new product
+// endpoint to create a new product
 app.post('/products', (req, res) => {
-
     const newId = Math.max(...products.map(p => p.id)) + 1;
-
     const newProduct = {
         id: newId,
         name: req.body.name,
         price: req.body.price
     };
-
     products.push(newProduct);
     res.status(201).json(newProduct);
 });
+
+// endpoint to update a product by id
+app.put('/products/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const productIndex = products.findIndex(p => p.id === id);
+    if (productIndex === -1) {
+        return res.status(404).json({ message: "Product not found" });
+    }
+    products[productIndex].name = req.body.name;
+    products[productIndex].price = req.body.price;
+    res.status(200).json(products[productIndex]);
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
