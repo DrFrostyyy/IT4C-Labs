@@ -50,6 +50,16 @@ app.put('/products/:id', (req, res) => {
     res.status(200).json(products[productIndex]);
 });
 
+// endpoint to delete a product by id
+app.delete('/products/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const productIndex = products.findIndex(p => p.id === id);
+    if (productIndex === -1) {
+        return res.status(404).json({ message: "product not found" });
+    }
+    products.splice(productIndex, 1);
+    res.status(204).send();
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
