@@ -40,3 +40,12 @@ export const deletePost = (req, res) => {
     }
     res.status(204).send();
 };
+
+export const patchPost = (req, res) => {
+    const postId = parseInt(req.params.id, 10);
+    const post = postService.patchPost(postId, req.body);
+    if (!post) {
+        return res.status(404).json({ message: 'Post not found.' });
+    }
+    res.json(post);
+};
