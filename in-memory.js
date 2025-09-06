@@ -7,6 +7,8 @@ const port = 3000;
 
 app.use(express.json());
 
+//Removed the duplicate routes
+
 // Mount the post routes
 app.use('/posts', postRoutes);
 
