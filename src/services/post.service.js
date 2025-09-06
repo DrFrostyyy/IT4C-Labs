@@ -35,3 +35,15 @@ export const deletePost = (id) => {
     posts.splice(postIndex, 1);
     return true;
 };
+
+//Challenge
+export const patchPost = (id, partialData) => {
+    const postIndex = posts.findIndex(p => p.id === id);
+    if (postIndex === -1) {
+        return null;
+    }
+    posts[postIndex] = { ...posts[postIndex], ...partialData };
+    return posts[postIndex];
+};
+
+
