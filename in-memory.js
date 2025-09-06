@@ -10,9 +10,6 @@ app.use(express.json());
 // Mount the post routes
 app.use('/posts', postRoutes);
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
 
 let products = [
   { id: 1, name: "Laptop", price: 1000 },
