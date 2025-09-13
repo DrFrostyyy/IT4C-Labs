@@ -1,6 +1,6 @@
-import express from 'express';
-import postRoutes from './src/routes/post.routes.js';
-import commentRoutes from './src/routes/comment.routes.js';
+import express from "express";
+import postRoutes from "./src/routes/post.routes.js";
+import commentRoutes from "./src/routes/comment.routes.js";
 
 const app = express();
 const port = 3000;
@@ -8,10 +8,10 @@ const port = 3000;
 app.use(express.json());
 
 // Mount the post routes
-app.use('/posts', postRoutes);
+app.use("/posts", postRoutes);
 
 // Mount the comment routes
-app.use('/comments', commentRoutes);   // <-- mount comments
+app.use("/comments", commentRoutes); // <-- mount comments
 
 // Products
 let products = [
@@ -37,21 +37,21 @@ app.get("/products/:id", (req, res) => {
 });
 
 // Create a new product
-app.post('/products', (req, res) => {
-  const newId = Math.max(...products.map(p => p.id)) + 1;
+app.post("/products", (req, res) => {
+  const newId = Math.max(...products.map((p) => p.id)) + 1;
   const newProduct = {
     id: newId,
     name: req.body.name,
-    price: req.body.price
+    price: req.body.price,
   };
   products.push(newProduct);
   res.status(201).json(newProduct);
 });
 
 // Update a product by id
-app.put('/products/:id', (req, res) => {
+app.put("/products/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  const productIndex = products.findIndex(p => p.id === id);
+  const productIndex = products.findIndex((p) => p.id === id);
   if (productIndex === -1) {
     return res.status(404).json({ message: "Product not found" });
   }
@@ -61,9 +61,9 @@ app.put('/products/:id', (req, res) => {
 });
 
 // Delete a product by id
-app.delete('/products/:id', (req, res) => {
+app.delete("/products/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  const productIndex = products.findIndex(p => p.id === id);
+  const productIndex = products.findIndex((p) => p.id === id);
   if (productIndex === -1) {
     return res.status(404).json({ message: "Product not found" });
   }
