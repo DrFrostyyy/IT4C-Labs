@@ -1,13 +1,15 @@
 import * as postService from '../services/post.service.js';
+import { ApiResponse } from '../utils/ApiResponse.js';
 
-    export const getAllPosts = async (req, res) => {
-        try {
-            const posts = await postService.getAllPosts();
-            res.json(posts);
-        } catch (error) {
-            res.status(500).json({ message: 'Error retrieving posts', error: error.message });
-        }
-    };
+export const getAllPosts = async (req, res) => {
+    try {
+        const posts = await postService.getAllPosts();
+        return res
+            .status(200)
+            .json(new ApiResponse(200, posts, "Posts retrieved successfully"));
+    } catch (error) {
+    }
+};
 
 
 export const getPostById = (req, res) => {

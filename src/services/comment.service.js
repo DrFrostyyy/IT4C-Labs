@@ -1,5 +1,3 @@
-// src/services/comment.service.js
-
 let comments = [];
 let nextId = 1;
 
