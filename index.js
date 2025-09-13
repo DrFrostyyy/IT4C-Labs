@@ -1,21 +1,21 @@
-import express from "express";
-import morgan from "morgan";
-import config from "./src/config/index.js"; 
-import postRoutes from "./src/routes/post.routes.js";
+import express from 'express';
+import postRoutes from './src/routes/post.routes.js';
+import config from "./src/config/index.js";
+import { testConnection } from './src/config/db.js'; // Import the test function
 
 const app = express();
-
-// Environment-specific logging
-if (config.nodeEnv === "development") {
-  app.use(morgan("dev"));
-} else if (config.nodeEnv === "production") {
-  app.use(morgan("combined"));  
-}
+const port = 3000;
 
 app.use(express.json());
 
-// Routes
-app.use("/posts", postRoutes);
+// Mount the post routes
+app.use('/posts', postRoutes);
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+    testConnection(); // Test the database connection on startup
+});
+
 
 app.get("/", (req, res) => {
   res.send("Name: Jana Cornejo, Section: IT4C, Program: Information Technology");

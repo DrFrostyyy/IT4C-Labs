@@ -8,7 +8,7 @@ export const getAllComments = () => {
 };
 
 export const getCommentsByPostId = (postId) => {
-    return comments.filter(c => c.postId === postId);
+    return comments.filter(c => c.postI++d === postId);
 };
 
 export const createComment = (postId, text) => {
