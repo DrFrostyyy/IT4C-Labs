@@ -13,4 +13,7 @@ router.get('/', userController.getAllUsers);
 // Get a single user by ID
 router.get('/:id', userController.getUserById);
 
+// GET posts by a specific user
+router.get('/:userId/posts', userController.getPostsByUser);
+
 export default router;

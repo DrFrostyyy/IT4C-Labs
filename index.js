@@ -6,13 +6,15 @@ import config from './src/config/index.js';
 import { testConnection } from './src/config/db.js';
 import { errorHandler } from './src/middlewares/errorHandler.middleware.js';
 
+
 const app = express();
 
 app.use(express.json());
 
+
 // Mount routes
-apapp.use('/api/posts', postRoutes);
-app.use('/comments', commentRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api', commentRoutes);
 app.use('/api/users', userRoutes);
 
 // Test / utility routes

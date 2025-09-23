@@ -21,3 +21,11 @@ export const getAllUsers = asyncHandler(async (req, res) => {
     const users = await userService.getAllUsers();
     res.status(200).json(new ApiResponse(200, users, 'Users retrieved successfully'));
 });
+
+import * as postService from '../services/post.service.js';
+
+export const getPostsByUser = asyncHandler(async (req, res) => {
+    const userId = parseInt(req.params.userId, 10);
+    const posts = await postService.getPostsByAuthorId(userId);
+    res.status(200).json(new ApiResponse(200, posts, `Posts by user ${userId} retrieved successfully`));
+});

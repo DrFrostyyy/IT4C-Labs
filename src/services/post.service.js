@@ -1,18 +1,39 @@
 import pool from '../config/db.js';
 import { ApiError } from '../utils/ApiError.js';
 
-// Get all posts
 export const getAllPosts = async () => {
-    const [posts] = await pool.query('SELECT * FROM posts');
+    const [posts] = await pool.query(`
+        SELECT 
+            p.id,
+            p.title,
+            p.content,
+            p.authorId,
+            u.username AS authorUsername,
+            u.email AS authorEmail
+        FROM posts p
+        JOIN users u ON p.authorId = u.id
+    `);
     return posts;
 };
 
-// Get a post by ID
 export const getPostById = async (id) => {
-    const [rows] = await pool.query('SELECT * FROM posts WHERE id = ?', [id]);
+    const [rows] = await pool.query(`
+        SELECT 
+            p.id,
+            p.title,
+            p.content,
+            p.authorId,
+            u.username AS authorUsername,
+            u.email AS authorEmail
+        FROM posts p
+        JOIN users u ON p.authorId = u.id
+        WHERE p.id = ?
+    `, [id]);
+
     if (!rows[0]) {
         throw new ApiError(404, "Post not found");
     }
+
     return rows[0];
 };
 
@@ -87,8 +108,15 @@ export const partiallyUpdatePost = async (id, updates) => {
     }
 };
 
-// Delete a post
 export const deletePost = async (id) => {
     const [result] = await pool.query('DELETE FROM posts WHERE id = ?', [id]);
     return result.affectedRows > 0;
+};
+
+export const getPostsByAuthorId = async (authorId) => {
+    const [posts] = await pool.query(
+        'SELECT * FROM posts WHERE authorId = ?',
+        [authorId]
+    );
+    return posts;
 };
