@@ -1,10 +1,12 @@
 import express from 'express';
 import postRoutes from './src/routes/post.routes.js';
 import commentRoutes from './src/routes/comment.routes.js';
-import userRoutes from './src/routes/user.routes.js'; // <-- import user routes
+import userRoutes from './src/routes/user.routes.js'; 
 import config from './src/config/index.js';
 import { testConnection } from './src/config/db.js';
 import { errorHandler } from './src/middlewares/errorHandler.middleware.js';
+
+
 
 
 const app = express();
@@ -16,6 +18,7 @@ app.use(express.json());
 app.use('/api/posts', postRoutes);
 app.use('/api', commentRoutes);
 app.use('/api/users', userRoutes);
+
 
 // Test / utility routes
 app.get('/', (req, res) => {

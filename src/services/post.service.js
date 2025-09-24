@@ -1,5 +1,6 @@
 import pool from '../config/db.js';
-import { ApiError } from '../utils/ApiError.js';
+import ApiError from "../utils/ApiError.js";
+
 
 export const getAllPosts = async () => {
     const [posts] = await pool.query(`
