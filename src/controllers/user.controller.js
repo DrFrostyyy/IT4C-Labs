@@ -1,24 +1,22 @@
-// src/controllers/user.controller.js
 import * as userService from '../services/user.service.js';
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 
-// Create a new user
+
 export const createUser = asyncHandler(async (req, res) => {
     const newUser = await userService.createUser(req.body);
     res.status(201).json(new ApiResponse(201, newUser, 'User created successfully'));
 });
 
-// Get a single user by ID
 export const getUserById = asyncHandler(async (req, res) => {
     const userId = parseInt(req.params.id, 10);
     const user = await userService.getUserById(userId);
     res.status(200).json(new ApiResponse(200, user, 'User retrieved successfully'));
 });
 
-// Get all users
+
 export const getAllUsers = asyncHandler(async (req, res) => {
     const users = await userService.getAllUsers();
     res.status(200).json(new ApiResponse(200, users, 'Users retrieved successfully'));

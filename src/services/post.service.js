@@ -1,7 +1,6 @@
 import pool from '../config/db.js';
 import ApiError from "../utils/ApiError.js";
 
-
 export const getAllPosts = async () => {
     const [posts] = await pool.query(`
         SELECT 
@@ -38,7 +37,6 @@ export const getPostById = async (id) => {
     return rows[0];
 };
 
-// Create a new post
 export const createPost = async (postData) => {
     const { title, content, authorId } = postData;
 
@@ -57,7 +55,6 @@ export const createPost = async (postData) => {
     }
 };
 
-// Update a post fully
 export const updatePost = async (id, postData) => {
     const { title, content, authorId } = postData;
 
@@ -79,7 +76,6 @@ export const updatePost = async (id, postData) => {
     }
 };
 
-// Partially update a post
 export const partiallyUpdatePost = async (id, updates) => {
     const fields = Object.keys(updates);
     const values = Object.values(updates);

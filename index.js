@@ -7,8 +7,6 @@ import { testConnection } from './src/config/db.js';
 import { errorHandler } from './src/middlewares/errorHandler.middleware.js';
 
 
-
-
 const app = express();
 
 app.use(express.json());
