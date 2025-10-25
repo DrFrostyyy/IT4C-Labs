@@ -1,7 +1,6 @@
-// src/services/user.service.js
 import pool from '../config/db.js';
 import ApiError from "../utils/ApiError.js";
-
+import bcrypt from 'bcryptjs';
 
 export const registerUser = async (userData) => {
     const { username, email, password } = userData;
