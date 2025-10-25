@@ -1,4 +1,5 @@
 import express from 'express';
+import photoRoutes from './src/routes/photo.routes.js';
 import postRoutes from './src/routes/post.routes.js';
 import commentRoutes from './src/routes/comment.routes.js';
 import userRoutes from './src/routes/user.routes.js';

@@ -1,5 +1,5 @@
 import pool from '../config/db.js';
-import { ApiError } from '../utils/ApiError.js';
+import ApiError from '../utils/ApiError.js';
 import fs from 'fs/promises';
 
 export const createPhoto = async (photoData) => {
