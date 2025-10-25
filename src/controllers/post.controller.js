@@ -36,26 +36,21 @@ export const createPost = asyncHandler(async (req, res) => {
 
 
 export const updatePost = asyncHandler(async (req, res) => {
-  const postId = parseInt(req.params.id, 10);
-  const updatedPost = await postService.updatePost(postId, req.body);
-  if (!updatedPost) throw new ApiError(404, "Post not found");
+    const postId = parseInt(req.params.id, 10);
+    const postData = req.body;
+    const userId = req.user.id;
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, updatedPost, "Post updated successfully"));
+    const updatedPost = await postService.updatePost(postId, postData, userId);
+    res.status(200).json(new ApiResponse(200, updatedPost, "Post updated successfully"));
 });
-
 
 export const deletePost = asyncHandler(async (req, res) => {
-  const postId = parseInt(req.params.id, 10);
-  const deleted = await postService.deletePost(postId);
-  if (!deleted) throw new ApiError(404, "Post not found");
+    const postId = parseInt(req.params.id, 10);
+    const userId = req.user.id;
 
-  return res
-    .status(204)
-    .json(new ApiResponse(204, null, "Post deleted successfully"));
+    await postService.deletePost(postId, userId);
+    res.status(200).json(new ApiResponse(200, null, "Post deleted successfully"));
 });
-
 
 export const patchPost = asyncHandler(async (req, res) => {
   const postId = parseInt(req.params.id, 10);

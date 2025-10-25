@@ -12,4 +12,5 @@ router.put('/:id', authMiddleware, validatePost, postController.updatePost);
 router.patch('/:id', authMiddleware, postController.patchPost);
 router.delete('/:id', authMiddleware, postController.deletePost);
 
+
 export default router;
