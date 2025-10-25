@@ -6,8 +6,8 @@ import authRoutes from './src/routes/auth.routes.js';
 import config from './src/config/index.js';
 import { testConnection } from './src/config/db.js';
 import { errorHandler } from './src/middlewares/errorHandler.middleware.js';
-
-
+import dotenv from 'dotenv';
+dotenv.config(); 
 const app = express();
 
 app.use(express.json());
