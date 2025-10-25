@@ -1,7 +1,8 @@
 import express from 'express';
 import postRoutes from './src/routes/post.routes.js';
 import commentRoutes from './src/routes/comment.routes.js';
-import userRoutes from './src/routes/user.routes.js'; 
+import userRoutes from './src/routes/user.routes.js';
+import authRoutes from './src/routes/auth.routes.js';
 import config from './src/config/index.js';
 import { testConnection } from './src/config/db.js';
 import { errorHandler } from './src/middlewares/errorHandler.middleware.js';
@@ -11,14 +12,13 @@ const app = express();
 
 app.use(express.json());
 
-
-// Mount routes
+app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
-app.use('/api', commentRoutes);
+app.use('/api/comments', commentRoutes);
 app.use('/api/users', userRoutes);
+app.use(errorHandler);
 
 
-// Test / utility routes
 app.get('/', (req, res) => {
   res.send('Name: Jana Cornejo, Section: IT4C, Program: Information Technology');
 });
@@ -34,10 +34,10 @@ app.get('/IT', (req, res) => {
   res.send('Check console for body data');
 });
 
-// Error handling middleware
+
 app.use(errorHandler);
 
-// Start server
+
 app.listen(config.port, () => {
   console.log(`🚀 Server running in ${config.nodeEnv} mode at http://localhost:${config.port}`);
   testConnection();
