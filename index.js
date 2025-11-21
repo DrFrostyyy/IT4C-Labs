@@ -1,46 +1,106 @@
 import express from 'express';
-import photoRoutes from './src/routes/photo.routes.js';
-import postRoutes from './src/routes/post.routes.js';
-import commentRoutes from './src/routes/comment.routes.js';
-import userRoutes from './src/routes/user.routes.js';
-import authRoutes from './src/routes/auth.routes.js';
+import helmet from 'helmet';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import swaggerUi from 'swagger-ui-express';
+import dotenv from 'dotenv';
+
+import swaggerSpec from './src/config/swagger.js';
 import config from './src/config/index.js';
 import { testConnection } from './src/config/db.js';
 import { errorHandler } from './src/middlewares/errorHandler.middleware.js';
-import dotenv from 'dotenv';
-dotenv.config(); 
+import v1Routes from './src/routes/index.js';
+
+dotenv.config();
+
 const app = express();
 
-app.use(express.json());
-app.use('/uploads', express.static('uploads'));
-app.use('/api/auth', authRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/comments', commentRoutes);
-app.use('/api/users', userRoutes);
-app.use(errorHandler);
-app.use('/api/photos', photoRoutes);
+app.use(helmet());
 
+
+const corsOptions = {
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true,
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+app.use(cors(corsOptions));
+
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,
+    message: {
+        success: false,
+        message: 'Too many requests from this IP, please try again later.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+app.use(globalLimiter);
+
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Blog API Documentation'
+}));
 
 app.get('/', (req, res) => {
-  res.send('Name: Jana Cornejo, Section: IT4C, Program: Information Technology');
+    res.json({
+        message: 'Blog API is running',
+        student: 'Jana Cornejo',
+        section: 'IT4C',
+        program: 'Information Technology',
+        version: 'v1',
+        documentation: '/api-docs'
+    });
 });
+
 app.get('/hello/:name', (req, res) => {
-  res.send(`Hello ${req.params.name}`);
+    res.send(`Hello ${req.params.name}`);
 });
+
 app.get('/foo', (req, res) => {
-  console.log(req.query);
-  res.send('Check console for query params');
+    console.log(req.query);
+    res.send('Check console for query params');
 });
+
 app.get('/IT', (req, res) => {
-  console.log(req.body);
-  res.send('Check console for body data');
+    console.log(req.body);
+    res.send('Check console for body data');
 });
+
+app.use('/api/v1', v1Routes);
 
 
 app.use(errorHandler);
 
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'Route not found'
+    });
+});
 
 app.listen(config.port, () => {
-  console.log(`🚀 Server running in ${config.nodeEnv} mode at http://localhost:${config.port}`);
-  testConnection();
+    console.log('Server running in ${config.nodeEnv} mode at http://localhost:${config.port}');
+    console.log('📚 API Documentation available at http://localhost:${config.port}/api-docs');
+    console.log('🔒 Security features: Helmet ✓ | CORS ✓ | Rate Limiting ✓');
+    testConnection();
+});
+
+
+export const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5, 
+    message: {
+        success: false,
+        message: 'Too many authentication attempts, please try again later.'
+    },
+    skipSuccessfulRequests: true,
 });
