@@ -1,6 +1,7 @@
 import * as photoService from '../services/photo.service.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import asyncHandler from 'express-async-handler';
+import ApiError from '../utils/ApiError.js';
 
 export const uploadPhoto = asyncHandler(async (req, res) => {
     if (!req.file) {

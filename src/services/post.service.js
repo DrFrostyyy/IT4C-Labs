@@ -96,3 +96,19 @@ export const deletePost = async (id, userId) => {
     const [result] = await pool.query('DELETE FROM posts WHERE id = ?', [id]);
     return result.affectedRows;
 };
+
+export const getPostsByAuthorId = async (authorId) => {
+    const [posts] = await pool.query(`
+        SELECT 
+            p.id,
+            p.title,
+            p.content,
+            p.authorId,
+            u.username AS authorUsername,
+            u.email AS authorEmail
+        FROM posts p
+        JOIN users u ON p.authorId = u.id
+        WHERE p.authorId = ?
+    `, [authorId]);
+    return posts;
+};
