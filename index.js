@@ -1,7 +1,6 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
 
@@ -9,11 +8,14 @@ import swaggerSpec from './src/config/swagger.js';
 import config from './src/config/index.js';
 import { testConnection } from './src/config/db.js';
 import { errorHandler } from './src/middlewares/errorHandler.middleware.js';
+import { globalLimiter } from './src/middlewares/rateLimiter.middleware.js';
 import v1Routes from './src/routes/index.js';
 
 dotenv.config();
 
 const app = express();
+
+
 
 app.use(helmet());
 
@@ -27,16 +29,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-const globalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100,
-    message: {
-        success: false,
-        message: 'Too many requests from this IP, please try again later.'
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-});
+// 3. Global Rate Limiting
 app.use(globalLimiter);
 
 
@@ -44,12 +37,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customCss: '.swagger-ui .topbar { display: none }',
     customSiteTitle: 'Blog API Documentation'
 }));
 
+
+// Health check endpoint
 app.get('/', (req, res) => {
     res.json({
         message: 'Blog API is running',
@@ -61,6 +55,7 @@ app.get('/', (req, res) => {
     });
 });
 
+// Legacy test routes
 app.get('/hello/:name', (req, res) => {
     res.send(`Hello ${req.params.name}`);
 });
@@ -75,11 +70,12 @@ app.get('/IT', (req, res) => {
     res.send('Check console for body data');
 });
 
+// API v1 routes
 app.use('/api/v1', v1Routes);
-
 
 app.use(errorHandler);
 
+// 404 handler
 app.use((req, res) => {
     res.status(404).json({
         success: false,
@@ -87,20 +83,10 @@ app.use((req, res) => {
     });
 });
 
+
 app.listen(config.port, () => {
-    console.log('Server running in ${config.nodeEnv} mode at http://localhost:${config.port}');
-    console.log('📚 API Documentation available at http://localhost:${config.port}/api-docs');
-    console.log('🔒 Security features: Helmet ✓ | CORS ✓ | Rate Limiting ✓');
+    console.log(`Server running in ${config.nodeEnv} mode at http://localhost:${config.port}`);
+    console.log(`API Documentation available at http://localhost:${config.port}/api-docs`);
+    console.log(`Security features: Helmet ✓ | CORS ✓ | Rate Limiting ✓`);
     testConnection();
-});
-
-
-export const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5, 
-    message: {
-        success: false,
-        message: 'Too many authentication attempts, please try again later.'
-    },
-    skipSuccessfulRequests: true,
 });
