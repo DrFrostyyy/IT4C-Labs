@@ -8,10 +8,12 @@ export const getAllPosts = async () => {
       p.title,
       p.content,
       p.authorId,
+      p.createdAt,
       u.username AS authorUsername,
       u.email AS authorEmail
     FROM posts p
     JOIN users u ON p.authorId = u.id
+    ORDER BY p.createdAt DESC
   `);
   return posts;
 };
@@ -23,6 +25,7 @@ export const getPostById = async (id) => {
       p.title,
       p.content,
       p.authorId,
+      p.createdAt,
       u.username AS authorUsername,
       u.email AS authorEmail
     FROM posts p
@@ -54,7 +57,7 @@ export const createPost = async (postData, authorId) => {
   }
 };
 
-export const updatePost = async (id, postData, userId) => { // Add userId as an argument
+export const updatePost = async (id, postData, userId) => {
     const { title, content } = postData;
     const post = await getPostById(id); 
 
@@ -71,11 +74,13 @@ export const updatePost = async (id, postData, userId) => { // Add userId as an 
 };
 
 export const partiallyUpdatePost = async (id, updates) => {
-  const fields = Object.keys(updates);
+  const allowedFields = ['title', 'content']; // Whitelist for security
+  const fields = Object.keys(updates).filter(f => allowedFields.includes(f));
+  
   if (fields.length === 0) return getPostById(id);
 
   const setClause = fields.map(field => `${field} = ?`).join(', ');
-  const values = Object.values(updates);
+  const values = Object.values(updates).filter((v, i) => allowedFields.includes(Object.keys(updates)[i]));
 
   const [result] = await pool.query(
     `UPDATE posts SET ${setClause} WHERE id = ?`,
@@ -104,11 +109,13 @@ export const getPostsByAuthorId = async (authorId) => {
             p.title,
             p.content,
             p.authorId,
+            p.createdAt,
             u.username AS authorUsername,
             u.email AS authorEmail
         FROM posts p
         JOIN users u ON p.authorId = u.id
         WHERE p.authorId = ?
+        ORDER BY p.createdAt DESC
     `, [authorId]);
     return posts;
 };
