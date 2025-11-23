@@ -1,22 +1,36 @@
 import pool from "../config/db.js";
 import ApiError from "../utils/ApiError.js";
-import * as commentService from "../services/comment.service.js";
-
-
 
 export const getAllComments = async () => {
-  const [rows] = await pool.query("SELECT * FROM comments");
+  const [rows] = await pool.query(`
+    SELECT 
+      c.id,
+      c.text,
+      c.postId,
+      c.authorId,
+      c.createdAt,
+      u.username AS authorUsername
+    FROM comments c
+    JOIN users u ON c.authorId = u.id
+  `);
   return rows;
 };
 
 export const getCommentsByPostId = async (postId) => {
-  const [rows] = await pool.query(
-    "SELECT * FROM comments WHERE postId = ?",
-    [postId]
-  );
+  const [rows] = await pool.query(`
+    SELECT 
+      c.id,
+      c.text,
+      c.postId,
+      c.authorId,
+      c.createdAt,
+      u.username AS authorUsername
+    FROM comments c
+    JOIN users u ON c.authorId = u.id
+    WHERE c.postId = ?
+  `, [postId]);
   return rows;
 };
-
 
 export const createComment = async (postId, authorId, commentData) => {
   try {
@@ -25,10 +39,18 @@ export const createComment = async (postId, authorId, commentData) => {
       [commentData.text, postId, authorId]
     );
 
-    const [rows] = await pool.query(
-      "SELECT * FROM comments WHERE id = ?",
-      [result.insertId]
-    );
+    const [rows] = await pool.query(`
+      SELECT 
+        c.id,
+        c.text,
+        c.postId,
+        c.authorId,
+        c.createdAt,
+        u.username AS authorUsername
+      FROM comments c
+      JOIN users u ON c.authorId = u.id
+      WHERE c.id = ?
+    `, [result.insertId]);
 
     return rows[0];
   } catch (error) {

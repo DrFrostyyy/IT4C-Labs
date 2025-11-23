@@ -7,10 +7,15 @@ import photoRoutes from './photo.routes.js';
 
 const router = Router();
 
+// API v1 routes
 router.use('/auth', authRoutes);
-router.use('/posts', postRoutes);
-router.use('/comments', commentRoutes);
 router.use('/users', userRoutes);
 router.use('/photos', photoRoutes);
+
+// Posts routes - includes nested comment routes
+router.use('/posts', postRoutes);
+
+// Standalone comments routes
+router.use('/comments', commentRoutes);
 
 export default router;

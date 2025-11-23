@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as postController from '../controllers/post.controller.js';
-import { validatePost } from '../middlewares/validator.middleware.js';
+import * as commentController from '../controllers/comment.controller.js';
+import { validatePost, validateComment } from '../middlewares/validator.middleware.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 
 const router = Router();
